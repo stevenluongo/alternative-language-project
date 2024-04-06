@@ -8,6 +8,10 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.List;
+import java.util.Arrays;
+
 
 public class Cell {
     private String oem;
@@ -142,7 +146,7 @@ public class Cell {
         return input.trim();
     }
 
-    private Integer extractYear(String text) {
+    public static Integer extractYear(String text) {
         Pattern pattern = Pattern.compile("\\d{4}");
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
@@ -240,4 +244,47 @@ public class Cell {
     public static Cell removeCell(HashMap<Integer, Cell> cells, Integer key) {
         return cells.remove(key);
     }
+
+    // 1. Calculate the OEM with the highest average body weight
+    public static String oemWithHighestAverageWeight(HashMap<Integer, Cell> cells) {
+        Map<String, Double> averageWeights = cells.values().stream()
+                .filter(cell -> cell.bodyWeight != null)
+                .collect(Collectors.groupingBy(Cell::getOem,
+                        Collectors.averagingDouble(Cell::getBodyWeight)));
+
+        return Collections.max(averageWeights.entrySet(), Map.Entry.comparingByValue()).getKey();
+    }
+
+    // 2. Find phones announced in one year and released in another
+    public static List<Cell> phonesWithDifferentAnnounceAndReleaseYears(HashMap<Integer, Cell> cells) {
+        return cells.values().stream()
+                .filter(cell -> cell.launchAnnounced != null && cell.launchStatus != null && !cell.launchStatus.equals("Discontinued") && !cell.launchStatus.equals("Cancelled"))
+                .filter(cell -> {
+                    Integer releaseYear = extractYear(cell.launchStatus);
+                    return releaseYear != null && !releaseYear.equals(cell.launchAnnounced);
+                })
+                .map(cell -> cell)
+                .collect(Collectors.toList());
+    }
+
+    // 3. Count phones with only one feature sensor
+    public static long countPhonesWithSingleFeatureSensor(HashMap<Integer, Cell> cells) {
+        return cells.values().stream()
+                .filter(cell -> cell.featuresSensors != null && !cell.featuresSensors.isEmpty())
+                .filter(cell -> Arrays.stream(cell.featuresSensors.split(",")).count() == 1)
+                .count();
+    }
+    
+    // 4. Find the year with the most phone launches after 1999
+    public static int mostPhonesLaunchedYearAfter1999(HashMap<Integer, Cell> cells) {
+        return cells.values().stream()
+                .filter(cell -> cell.launchAnnounced != null && cell.launchAnnounced > 1999)
+                .collect(Collectors.groupingBy(Cell::getLaunchAnnounced, Collectors.counting()))
+                .entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .get()
+                .getKey();
+    }
+    
+    
 }

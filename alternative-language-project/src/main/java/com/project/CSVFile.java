@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class CSVFile {
     private String filePath;
@@ -51,5 +54,14 @@ public class CSVFile {
         }
 
         return rows;
+    }
+
+    public static void ensureFileNotEmpty(File file) throws FileNotFoundException, IllegalArgumentException {
+        Scanner scanner = new Scanner(file);
+        if (!scanner.hasNext()) {
+            scanner.close();
+            throw new IllegalArgumentException("File is empty");
+        }
+        scanner.close();
     }
 }
