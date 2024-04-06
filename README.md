@@ -51,21 +51,99 @@ This library simplified CSV file operations, making it straightforward to read a
 
 ## Analysis Results
 ### 1. OEM with the Highest Average Weight: 
+
+### My process:
+* Iterate over the HashMap of Cell objects to accumulate weights for each OEM and then calculate the average.
+* Store the results in a Map<String, Float> where keys are OEMs and values are the average weights.
+* Find the entry with the highest value.
+
+### Code
+```
+public static String oemWithHighestAverageWeight(HashMap<Integer, Cell> cells) {
+  Map<String, Double> averageWeights = cells.values().stream()
+          .filter(cell -> cell.bodyWeight != null)
+          .collect(Collectors.groupingBy(Cell::getOem,
+                  Collectors.averagingDouble(Cell::getBodyWeight)));
+  
+  return Collections.max(averageWeights.entrySet(), Map.Entry.comparingByValue()).getKey();
+}
+```
+
+### Result
 * Icemobile emerged as the OEM with the heaviest average phone body weight.
+
+<br/>
 
 ### 2. Phones Announced and Released in Different Years:
 
+### My process:
+* This question requires comparing the launchAnnounced year to the launchStatus year.
+
+### Code
+```
+public static List<Cell> phonesWithDifferentAnnounceAndReleaseYears(HashMap<Integer, Cell> cells) {
+  return cells.values().stream()
+          .filter(cell -> cell.launchAnnounced != null && cell.launchStatus != null && !cell.launchStatus.equals("Discontinued") &&  !cell.launchStatus.equals("Cancelled"))
+          .filter(cell -> {
+              Integer releaseYear = extractYear(cell.launchStatus);
+              return releaseYear != null && !releaseYear.equals(cell.launchAnnounced);
+          })
+          .map(cell -> cell)
+          .collect(Collectors.toList());
+}
+```
+
+### Result:
 * Mitac MIO Leap G50 - Announced: 2008, Released: 2009
 * Mitac MIO Leap K1 - Announced: 2008, Released: 2009
 * Motorola XT701 - Announced: 2009, Released: 2010
 * Sharp AQUOS  941SH - Announced: 2009, Released: 2010
 * Sharp 940SH - Announced: 2009, Released: 2010
 
+<br/>
+
 ### 3. Number of Phones with Only One Feature Sensor: 
+
+### My process:
+* This question requires comparing the launchAnnounced year to the launchStatus year.
+
+### Code
+```
+public static long countPhonesWithSingleFeatureSensor(HashMap<Integer, Cell> cells) {
+    return cells.values().stream()
+            .filter(cell -> cell.featuresSensors != null && !cell.featuresSensors.isEmpty())
+            .filter(cell -> Arrays.stream(cell.featuresSensors.split(",")).count() == 1)
+            .count();
+}
+```
+
+### Result:
 * 845 phones were found to have just a single feature sensor.
 
+<br/>
+
 ### 4. Year with Most Phone Launches Post-1999: 
+
+### My process:
+* This question requires comparing the launchAnnounced year to the launchStatus year.
+
+### Code
+```
+public static int mostPhonesLaunchedYearAfter1999(HashMap<Integer, Cell> cells) {
+    return cells.values().stream()
+            .filter(cell -> cell.launchAnnounced != null && cell.launchAnnounced > 1999)
+            .collect(Collectors.groupingBy(Cell::getLaunchAnnounced, Collectors.counting()))
+            .entrySet().stream()
+            .max(Map.Entry.comparingByValue())
+            .get()
+            .getKey();
+}
+```
+
+### Result:
 * 2019 was identified as the year with the highest number of phone launches.
+
+<br/>
 
 ### Output: 
 <img width="684" alt="Screenshot 2024-04-06 at 9 55 58 AM" src="https://github.com/stevenluongo/alternative-language-project/assets/53283472/c99c714e-96b1-4f04-ab0b-1b9c524a20d3">
