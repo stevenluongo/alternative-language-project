@@ -12,10 +12,11 @@ public class App
 
         //1. Which OEM has the highest average weight?
         String oem = Cell.oemWithHighestAverageWeight(cells);
-        System.out.println("OEM with highest average weight: " + oem);
+        System.out.println("\n\n1. Which OEM has the highest average weight?: \n");
+        System.out.println(oem);
 
         //2. Were there any phones announced in one year and released in another? What are they?
-        System.out.println("\nPhones announced in one year and released in another:");
+        System.out.println("\n\n2. Were there any phones announced in one year and released in another? What are they?: \n");
         List<Cell> phones = Cell.phonesWithDifferentAnnounceAndReleaseYears(cells);
         phones.forEach((phone) -> {
             System.out.println(phone.getOem() + " " + phone.getModel() + " - Announced: " + phone.getLaunchAnnounced() + ", Released: " + phone.getLaunchStatus());
@@ -23,11 +24,13 @@ public class App
 
         //3. How many phones have only one feature sensor?
         long count = Cell.countPhonesWithSingleFeatureSensor(cells);
-        System.out.println("\nNumber of phones with only one feature sensor: " + count);
+        System.out.println("\n\n3. How many phones have only one feature sensor?: \n");
+        System.out.println(count);
 
         //4. What year had the most phones launched in any year later than 1999?
         int most = Cell.mostPhonesLaunchedYearAfter1999(cells);
-        System.out.println("\nYear with the most phone launches after 1999: " + most);
+        System.out.println("\n\n4. What year had the most phones launched in any year later than 1999?: \n");
+        System.out.println(most);
     }
 
 }
