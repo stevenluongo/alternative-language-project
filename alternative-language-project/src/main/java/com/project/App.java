@@ -10,6 +10,7 @@ public class App
         CSVFile csvFile = new CSVFile("alternative-language-project/src/main/java/resources/cells.csv");
         HashMap<Integer, Cell> cells = csvFile.readAll();
 
+        //1. Which OEM has the highest average weight?
         String oem = Cell.oemWithHighestAverageWeight(cells);
         System.out.println("OEM with highest average weight: " + oem);
 
