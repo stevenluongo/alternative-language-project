@@ -105,7 +105,7 @@ public static List<Cell> phonesWithDifferentAnnounceAndReleaseYears(HashMap<Inte
 ### 3. Number of Phones with Only One Feature Sensor: 
 
 ### My process:
-* This question requires comparing the launchAnnounced year to the launchStatus year.
+* This question necessitates parsing the featuresSensors field to count the number of sensors listed for each phone.
 
 ### Code
 ```
@@ -125,7 +125,7 @@ public static long countPhonesWithSingleFeatureSensor(HashMap<Integer, Cell> cel
 ### 4. Year with Most Phone Launches Post-1999: 
 
 ### My process:
-* This question requires comparing the launchAnnounced year to the launchStatus year.
+* For this, you'd filter Cell objects by launchAnnounced greater than 1999, then count the occurrences of each year. 
 
 ### Code
 ```
